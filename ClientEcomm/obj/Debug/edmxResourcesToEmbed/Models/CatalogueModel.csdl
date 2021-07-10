@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CatalogueModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CAT_CATEGORIE">
+    <Key>
+      <PropertyRef Name="CODE_CATEGORIE" />
+    </Key>
+    <Property Name="CODE_CATEGORIE" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LIBELLE_CATEGORIE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DATE_SAISIE" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="CAT_PRODUIT" Relationship="Self.FK_CAT_PRODUIT_CAT_PRODUIT" FromRole="CAT_CATEGORIE" ToRole="CAT_PRODUIT" />
+  </EntityType>
+  <EntityType Name="CAT_PRODUIT">
+    <Key>
+      <PropertyRef Name="CODE_PRODUIT" />
+    </Key>
+    <Property Name="CODE_PRODUIT" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CODE_CATEGORIE" Type="Int32" />
+    <Property Name="LIBELLE_PRODUIT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="DESCRIPTION_PRODUIT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IMAGE_PRODUIT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="URL_IMAGE_PRODUIT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DATE_SAISIE" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="CAT_CATEGORIE" Relationship="Self.FK_CAT_PRODUIT_CAT_PRODUIT" FromRole="CAT_PRODUIT" ToRole="CAT_CATEGORIE" />
+  </EntityType>
+  <EntityType Name="Client">
+    <Key>
+      <PropertyRef Name="ClientID" />
+    </Key>
+    <Property Name="ClientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Adresse" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Commande" Relationship="Self.FK_Commande_Client" FromRole="Client" ToRole="Commande" />
+  </EntityType>
+  <EntityType Name="Commande">
+    <Key>
+      <PropertyRef Name="IdCommande" />
+    </Key>
+    <Property Name="IdCommande" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CODE_PRODUIT" Type="Int32" />
+    <Property Name="ClientID" Type="Int32" />
+    <Property Name="DateCommande" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Client" Relationship="Self.FK_Commande_Client" FromRole="Commande" ToRole="Client" />
+  </EntityType>
+  <Association Name="FK_CAT_PRODUIT_CAT_PRODUIT">
+    <End Role="CAT_CATEGORIE" Type="Self.CAT_CATEGORIE" Multiplicity="0..1" />
+    <End Role="CAT_PRODUIT" Type="Self.CAT_PRODUIT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CAT_CATEGORIE">
+        <PropertyRef Name="CODE_CATEGORIE" />
+      </Principal>
+      <Dependent Role="CAT_PRODUIT">
+        <PropertyRef Name="CODE_CATEGORIE" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Commande_Client">
+    <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+    <End Role="Commande" Type="Self.Commande" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Client">
+        <PropertyRef Name="ClientID" />
+      </Principal>
+      <Dependent Role="Commande">
+        <PropertyRef Name="ClientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CATALOGUECLIENT_Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CAT_CATEGORIE" EntityType="Self.CAT_CATEGORIE" />
+    <EntitySet Name="CAT_PRODUIT" EntityType="Self.CAT_PRODUIT" />
+    <EntitySet Name="Client" EntityType="Self.Client" />
+    <EntitySet Name="Commande" EntityType="Self.Commande" />
+    <AssociationSet Name="FK_CAT_PRODUIT_CAT_PRODUIT" Association="Self.FK_CAT_PRODUIT_CAT_PRODUIT">
+      <End Role="CAT_CATEGORIE" EntitySet="CAT_CATEGORIE" />
+      <End Role="CAT_PRODUIT" EntitySet="CAT_PRODUIT" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Commande_Client" Association="Self.FK_Commande_Client">
+      <End Role="Client" EntitySet="Client" />
+      <End Role="Commande" EntitySet="Commande" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
